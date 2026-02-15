@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Letter - From Ame</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: 'Caveat', cursive;
+      background: linear-gradient(180deg, #a8d5f2 0%, #7eb3d9 100%);
+      --brown: #57280f;
+      --blue: #4a9fd8;
+      --dark-blue: #3a94b7;
+      --machine-color: #32c2db;
+      --machine-width: 160px;
+      --m: 2;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .waves {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background-repeat: repeat-x;
+      animation: wave-animation 20s linear infinite;
+    }
+
+    .wave:nth-child(1) {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="%2385c9f5" fill-opacity="0.4"/></svg>');
+      background-size: 50% 80px;
+      animation-duration: 25s;
+      bottom: 0;
+    }
+
+    .wave:nth-child(2) {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,80 Q300,30 600,80 T1200,80 L1200,120 L0,120 Z" fill="%2369b8eb" fill-opacity="0.3"/></svg>');
+      background-size: 50% 100px;
+      animation-duration: 20s;
+      animation-direction: reverse;
+      bottom: 0;
+    }
+
+    .wave:nth-child(3) {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z" fill="%234da8df" fill-opacity="0.5"/></svg>');
+      background-size: 50% 90px;
+      animation-duration: 30s;
+      bottom: 0;
+    }
+
+    @keyframes wave-animation {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      min-height: 600px;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pix,
+    .pix::before,
+    .pix::after {
+      width: calc(var(--w) * var(--m));
+      height: calc(var(--h) * var(--m));
+      image-rendering: pixelated;
+      background-size: calc(var(--w) * var(--m)) calc(var(--h) * var(--m));
+    }
+
+    .pix::before,
+    .pix::after {
+      position: absolute;
+      content: '';
+    }
+
+    .claw-machine {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid var(--brown);
+      overflow: hidden;
+    }
+
+    .collection-box {
+      --h: 32px;
+      width: calc(var(--m) * var(--machine-width));
+      margin: calc(var(--m) * var(--h) * -1 - 10px) 0 24px;
+      display: flex;
+      align-items: bottom;
+      justify-content: start;
+    }
+
+    .collection-box .toy-wrapper {
+      position: relative;
+      width: calc(100% / 6);
+      display: flex;
+      align-items: end;
+      justify-content: center;
+    }
+
+    .collection-box .toy-wrapper .toy::after {
+      top: auto;
+      bottom: 0;
+    }
+
+    .toy-wrapper.squeeze-in {
+      width: 0;
+      animation: squeeze-in forwards 0.4s;
+      animation-delay: 1.4s;
+    }
+
+    @keyframes squeeze-in {
+      0% { width: 0; }
+      100% { width: calc(100% / 6); }
+    }
+
+    @keyframes show-toy-2 {
+      0% {
+        opacity: 0;
+        transform: translateY(-100vh);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toy-wrapper .toy {
+      opacity: 0;
+      transform: translateY(-100vh);
+      animation: forwards show-toy-2 0.8s;
+      animation-delay: 1s;
+    }
+
+    .claw-machine.show-overlay::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: var(--machine-color);
+      opacity: 0.6;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .box {
+      position: relative;
+      background-color: #7fcfed;
+      --w: var(--machine-width);
+      --h: 180px;
+    }
+
+    .box::before {
+      background-color: var(--brown);
+      top: calc(70px * var(--m));
+      width: 100%;
+      height: calc(var(--m) * 8px);
+      z-index: 5;
+    }
+
+    .box::after {
+      background-color: var(--machine-color);
+      top: calc(70px * var(--m));
+      right: 0px;
+      width: calc(var(--m) * 8px);
+      height: calc(var(--m) * 170px);
+      z-index: 2;
+    }
+
+    .machine-top,
+    .machine-bottom {
+      position: absolute;
+      width: 100%;
+      --h: 70px;
+      height: calc(var(--h) * var(--m));
+    }
+
+    .machine-top {
+      top: 0;
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .machine-top::after {
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #70f7f372;
+    }
+
+    .machine-bottom {
+      bottom: 0;
+      background-color: #def7f6;
+    }
+
+    .collection-point {
+      position: absolute;
+      bottom: 0;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAMCAYAAABm+U3GAAAAAXNSR0IArs4c6QAAADBJREFUOE9jtJqy/T8DFcGxHE9GkHGM1DYYZCjIcJoYTDMXjxqMkrZGIw8eHEMvKADnSiE1EAXSagAAAABJRU5ErkJggg==);
+      --w: 44px;
+      --h: 24px;
+      z-index: 0;
+    }
+
+    .rail {
+      top: 0;
+      left: 0;
+      transition: 0.3s;
+      border: solid var(--blue);
+    }
+
+    .rail.hori {
+      --h: 5px;
+      width: 100%;
+      background-color: #fff;
+      border-width: 2px 0;
+    }
+
+    .rail.vert {
+      position: absolute;
+      --h: 70px;
+      --w: 5px;
+      background-color: #fff;
+      border-width: 0 2px;
+    }
+
+    .arm-joint {
+      position: absolute;
+      top: 0;
+      left: 0;
+      --w: 5px;
+      --h: 5px;
+      transition: 0.3s;
+      z-index: -1;
+    }
+
+    .arm-joint::after {
+      position: absolute;
+      border: solid var(--blue) 2px;
+      background-color: #fff;
+      --w: 10px;
+      --h: 10px;
+      top: calc(var(--m) * var(--h) * -0.25);
+      left: calc(var(--m) * var(--w) * -0.25);
+    }
+
+    .arm::after {
+      position: absolute;
+      --w: 13px;
+      --h: 7px;
+      bottom: calc(var(--m) * -1px);
+      left: calc(var(--m) * -3px);
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAHCAYAAADTcMcaAAAAAXNSR0IArs4c6QAAAElJREFUKFNjZGBgYDBeeus/iCYGnI1WY2QEaTgTpUqMerAak2W3GVA0RWgKMKy4/gHDAGRx6miCWQEyGQbQbcawiRiPgTWRE3oA5mIzfZr3jVYAAAAASUVORK5CYII=);
+    }
+
+    .arm.missed::after {
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAHCAYAAADTcMcaAAAAAXNSR0IArs4c6QAAAENJREFUKFNjZGBgYDBeeus/iCYGnI1WY2QEaTgTpUqMerAak2W3GSjTFKEpADZpxfUPGLYiy+G0CaYImyHkO4+c0AMAWBctfQPWfVQAAAAASUVORK5CYII=);
+    }
+
+    .control {
+      position: relative;
+      --h: 60px;
+      width: 100%;
+      text-align: right;
+      background-color: var(--blue);
+    }
+
+    .cover {
+      position: absolute;
+      background-color: var(--machine-color);
+      z-index: 4;
+    }
+
+    .top {
+      top: 0;
+      width: 100%;
+      height: calc(var(--m) * 16px);
+    }
+
+    .collection-arrow {
+      position: absolute;
+      left: calc(var(--m) * 21px);
+      top: calc(var(--m) * 9px);
+      --w: 8px;
+      --h: 4px;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAYAAACzzX7wAAAAAXNSR0IArs4c6QAAAClJREFUGFdjDDn86T8DHsAIksOlaI0tHyNYATZFIEmQOFwBsiKYJEgMAPTvDw1xBcM+AAAAAElFTkSuQmCC);
+      filter: sepia(1) brightness(0.5);
+    }
+
+    .bottom {
+      bottom: 0px;
+      width: 100%;
+      height: calc(var(--m) * 8px);
+      background-color: var(--brown);
+    }
+
+    .left {
+      bottom: 0px;
+      left: 0px;
+      height: calc(var(--m) * 170px);
+      width: calc(var(--m) * 8px);
+    }
+
+    .right {
+      top: 0;
+      right: 0px;
+      height: 100%;
+      width: calc(var(--m) * 116px);
+    }
+
+    .instruction {
+      position: absolute;
+      --w: 51px;
+      --h: 12px;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAMCAYAAADPjYVSAAAAAXNSR0IArs4c6QAAAPRJREFUSEvdVkESwkAIs0d9hv9/k8/Qow4d6aSZBKjjRfdSdltYIBC63B735+m9rufLkvuQ4/joHnVCRjsp531hG89w7+S0r3xdnc8X1RONOGfynL/lO1A/A8akOZ/4Xk7GhoQy6pBx2fwkmKOJZMQQ/Q0ZFzVHP0VIlUlVVlw+GKR6p/wYBTNFzSGjLu6SMk3iDhl04NfllbH+ZZUEUDWbqn9XjkgkWBaqlJh0eHQopkwwLDU7eu0a1fWHs9eRQqeHNF4OSYfMNFvVkHSzZ0oMqP9VZBytcy9O6JptTZGJ72SZqdrvJjT3Au6VgxVds+70t+cFkvdjifIP/BkAAAAASUVORK5CYII=);
+      top: calc(var(--m) * 34px);
+      right: calc(var(--m) * 11px);
+    }
+
+    .arm {
+      position: absolute;
+      --w: 7px;
+      --h: 28px;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--blue);
+      transition: 0.3s;
+      margin-top: calc(var(--m) * -1px);
+      margin-left: calc(var(--m) * -1px);
+    }
+
+    .claws {
+      position: absolute;
+      --w: 3px;
+      --h: 10px;
+      bottom: calc(var(--m) * -5px);
+      left: calc(var(--m) * 2.5px);
+    }
+
+    .claws::before,
+    .claws::after {
+      top: 0;
+      --w: 10px;
+      --h: 16px;
+      transition: 0.2s;
+    }
+
+    .claws::before {
+      left: calc(var(--m) * -10px);
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQCAYAAAAvf+5AAAAAAXNSR0IArs4c6QAAAGRJREFUKFNjZMADwjX4/6+88ZERpARMYAMgRSuuf2CI0BRgACnGqhCmCGYASDGGQmyKMEzEpQjFjfgUwRUSUgRWSIwi0hSCVBNjKjx4CClGCUeiggcWC0QFOD7FlCUKZJNhyQwAi8VlK14hrsQAAAAASUVORK5CYII=);
+      --close-angle: 45deg;
+      transform-origin: top right;
+    }
+
+    .claws::after {
+      left: calc(var(--m) * 2.5px);
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAQCAYAAAAvf+5AAAAAAXNSR0IArs4c6QAAAFxJREFUKFNjZICCcA3+/ytvfGSE8dFpsARI0YrrHxgiNAUYcClmhCmCmYBLMYqJ+BTD3UTIZBTH41OM4UtcirEGBzbF5CskymqiPENU8BBSBIoI8qIQb6IgNpkBAEPjZSuK8jVuAAAAAElFTkSuQmCC);
+      --close-angle: -45deg;
+      transform-origin: top left;
+    }
+
+    .arm.open .claws::before,
+    .arm.open .claws::after {
+      rotate: var(--close-angle);
+    }
+
+    .arm-joint::before {
+      --w: 20px;
+      --h: 16px;
+      transform: scale(var(--scale));
+      margin-left: -15px;
+      margin-top: var(--shadow-pos);
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAAAXNSR0IArs4c6QAAAF5JREFUOE9jZMABrKZs/49LDiR+LMeTEZs8iiAhQ3BZgGw43EByDYNZAjMUbCClhiEbSn0DqeU6mCsZRw3El5aJkqN+GA7+dAgLGEqTD0rWo9RQrIUDehQScjGu4gsAxKQ3Ke4v44gAAAAASUVORK5CYII=);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    button {
+      position: relative;
+      z-index: 5;
+      --w: 24px;
+      --h: 24px;
+      margin: 12px 12px 0 0;
+      border: 0;
+      background-color: transparent;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFRJREFUKFNjZICC/////4exsdGMjIyMIHEwQUgxzACQJkZsikOPfAarWW3Di2EZhgaYYphKdE0oGtAVY9ME14BLMbomypwEMo0kP9BGA8kRR2rSAACHREftd0fKPgAAAABJRU5ErkJggg==);
+      filter: sepia(1) brightness(0.4);
+      pointer-events: none;
+      cursor: pointer;
+    }
+
+    .hori-btn {
+      transform: rotate(90deg);
+    }
+
+    button.active {
+      animation: pulse infinite 1s;
+      pointer-events: all;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: sepia(0); }
+      50% { filter: sepia(1); }
+    }
+
+    .toy.display {
+      transform: scale(3);
+      animation: forwards show-toy-1 0.8s;
+      animation-delay: 1s;
+    }
+
+    .toy {
+      position: absolute;
+      transition: transform 1s, left 0.3s, top 0.3s;
+      --m: 2;
+      --w: 30px;
+      --h: 22px;
+      transform: rotate(var(--rotate-angle));
+      pointer-events: none;
+    }
+
+    .toy::after {
+      content: '';
+    }
+
+    .toy.envelope::after {
+      --w: 30px;
+      --h: 22px;
+      top: 0;
+      left: 0;
+      position: absolute;
+      width: calc(var(--w) * var(--m));
+      height: calc(var(--h) * var(--m));
+      background: linear-gradient(to bottom, #ff2a22 0%, #ff2a22 50%, #ff98a7 50%, #ff98a7 100%);
+      clip-path: polygon(
+        0% 50%, 
+        50% 20%, 
+        100% 50%, 
+        100% 100%, 
+        0% 100%
+      );
+    }
+
+    .toy.envelope.grabbed::after {
+      filter: brightness(1.1);
+    }
+
+    .toy-wrapper .toy.envelope::after {
+      background: linear-gradient(to bottom, #ff2a22 0%, #ff2a22 50%, #ff98a7 50%, #ff98a7 100%);
+    }
+
+    .toy.selected {
+      pointer-events: all;
+    }
+
+    @keyframes show-toy-1 {
+      0% {
+        opacity: 1;
+        transform: scale(3) translateY(0);
+      }
+      30% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1) translateY(-100vh);
+      }
+    }
+
+    .control .collection-point {
+      filter: brightness(0.8);
+      bottom: calc(var(--m) * 8px);
+    }
+
+    /* Envelope Modal */
+    .envelope-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .envelope-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .envelope-modal-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: scale(0.8);
+      transition: transform 0.3s ease-out;
+    }
+
+    .envelope-modal.active .envelope-modal-content {
+      transform: scale(1);
+    }
+
+    #envelope-large {
+      position: relative;
+      perspective: 1000px;
+      height: 450px;
+      width: 420px;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      background-color: #ff2a22;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    .front {
+      position: absolute;
+      width: 0;
+      height: 0;
+      z-index: 3;
+    }
+
+    #envelope-large .flap-large {
+       border-top: 130px solid #ff2a22;
+  border-left: 190px solid transparent;
+  border-right: 190px solid transparent;
+  border-bottom: 110px solid transparent;
+
+  transform-origin: top;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  z-index: 5;  /* flap above when closed */
+    }
+
+   #envelope-large .pocket-large {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+
+  border-left: 210px solid #ff98a7;
+  border-right: 210px solid #ff748d;
+
+ border-bottom: 170px solid #ff98a7;
+border-top: 170px solid transparent;
+
+
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+
+  #envelope-large .letter-large {
+     z-index: 10;
+ position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 20px);
+
+  background-color: white;
+  width: 85%;
+
+  padding: 40px 30px 80px 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 26px rgba(0, 0, 0, .12);
+
+  transition: transform 0.6s ease, z-index 0s;
+  cursor: pointer;
+}
+
+
+  #envelope-large.reading .letter-large {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    bottom: auto;
+    z-index: 10002;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  /* Dimmed background overlay when reading */
+  #envelope-large.reading::before {
+    pointer-events: none;
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10001;
+    animation: fadeInDim 0.3s ease;
+  }
+
+  @keyframes fadeInDim {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+
+  #envelope-large.open .letter-large {
+  transform: translate(-50%, -200px);
+}
+
+
+
+    .letter-content {
+  position: relative;
+  width: 100%;
+  height: 320px;
+}
+
+
+.letter-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+ .letter-page.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+
+    #envelope-large .words {
+      position: relative;
+      font-size: 20px;
+      font-family: 'Caveat', cursive;
+      color: black;
+      font-weight: 600;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .page-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      gap: 20px;
+      align-items: center;
+      z-index: 10003;
+    }
+
+    #envelope-large.reading .page-controls {
+      display: flex;
+    }
+
+    .page-btn {
+      background: #ff2a22;
+       pointer-events: all;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #d91f1a;
+      transform: scale(1.1);
+    }
+
+    .page-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .page-indicator {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .hearts {
+      position: absolute;
+      top: 120px;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px; /* turunin 20px */
+      right: 10%;
+    }
+
+    .heart:before, .heart:after {
+      position: absolute;
+      content: "";
+      background: #d00000;
+      width: 40px;
+      height: 64px;
+      left: 40px;
+      top: 0;
+      border-radius: 40px 40px 0 0;
+      transform: rotate(-45deg);
+      transform-origin: 0 100%;
+    }
+
+    .heart:after {
+      left: 0;
+      transform: rotate(45deg);
+      transform-origin: 100% 100%;
+    }
+
+    #envelope-large.close .heart {
+      opacity: 0;
+      animation: none;
+    }
+
+    .a1 {
+      left: 20%;
+      transform: scale(0.6);
+      opacity: 1;
+      animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate;
+      animation-fill-mode: forwards;
+      animation-delay: 0.7s;
+    }
+
+    .a2 {
+      left: 55%;
+      transform: scale(1);
+      opacity: 1;
+      animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate;
+      animation-fill-mode: forwards;
+      animation-delay: 0.7s;
+    }
+
+    .a3 {
+      left: 10%;
+      transform: scale(0.8);
+      opacity: 1;
+      animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate;
+      animation-fill-mode: forwards;
+      animation-delay: 0.7s;
+    }
+
+    @keyframes slideUp {
+      0% { top: 0; }
+      100% { top: -500px; }
+    }
+
+    @keyframes sideSway {
+      0% { margin-left: 0px; }
+      100% { margin-left: 50px; }
+    }
+
+    #envelope-large.open .flap-large {
+      transition: transform 0.4s ease, z-index 0.6s;
+      z-index: 1;
+    }
+
+
+    .modal-close {
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 10001;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-close::before,
+    .modal-close::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background: #ffffff;
+    }
+
+    .modal-close::before {
+      transform: rotate(45deg);
+    }
+
+    .modal-close::after {
+      transform: rotate(-45deg);
+    }
+
+    @media (max-width: 768px) {
+      .envelope-modal-content {
+        padding: 25px 25px 100px 25px;
+      }
+      
+      #envelope-large {
+        height: 180px;
+        width: 280px;
+      }
+
+      #envelope-large .flap-large {
+        border-top: 98px solid #ff2a22;
+        border-left: 140px solid transparent;
+        border-right: 140px solid transparent;
+        border-bottom: 82px solid transparent;
+      }
+
+      #envelope-large .pocket-large {
+        border-left: 140px solid #ff748d;
+        border-right: 140px solid #ff748d;
+        border-bottom: 90px solid #ff98a7;
+        border-top: 90px solid transparent;
+      }
+
+      #envelope-large .words {
+        font-size: 16px;
+      }
+    }
+
+    .page-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      z-index: 99999;
+      opacity: 1;
+      animation: fadeOut 2s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .final-btn {
+  margin-top:20px;
+   pointer-events: all;
+  background:#ff2a22;
+  color:white;
+  border:none;
+  padding:12px 28px;
+  border-radius:30px;
+  cursor:pointer;
+  font-family:'Caveat', cursive;
+  font-size:20px;
+  transition: all 0.3s ease;
+}
+
+.final-btn:hover {
+  background:#d91f1a;
+  transform: scale(1.05);
+}
+
+.screen-fade {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  opacity:0;
+  z-index:999999;
+  pointer-events:none;
+  transition: opacity 1.2s ease;
+}
+
+.screen-fade.active {
+  opacity:1;
+}
+
+/* ===========================
+       FALLING POLAROIDS LAYER
+       =========================== */
+    .falling-polaroids-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 1;
+    }
+
+    .falling-polaroids-layer.active {
+      opacity: 1;
+    }
+
+    /* Falling polaroid frame */
+    .polaroid-falling {
+      position: absolute;
+      background: #ffffff;
+      padding: 12px 12px 48px 12px;
+      box-shadow:
+        0 10px 25px rgba(0,0,0,0.2),
+        0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 2px;
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    .polaroid-falling.portrait  { width: 160px; }
+    .polaroid-falling.landscape { width: 210px; }
+    .polaroid-falling.square    { width: 175px; }
+
+    @media (min-width: 768px) {
+      .polaroid-falling.portrait  { width: 200px; }
+      .polaroid-falling.landscape { width: 265px; }
+      .polaroid-falling.square    { width: 230px; }
+    }
+
+    @media (min-width: 1280px) {
+      .polaroid-falling.portrait  { width: 240px; }
+      .polaroid-falling.landscape { width: 320px; }
+      .polaroid-falling.square    { width: 270px; }
+    }
+
+    .polaroid-falling img {
+      width: 100%;
+      display: block;
+      max-height: 260px;
+      object-fit: cover;
+    }
+
+    .polaroid-caption-falling {
+      position: absolute;
+      bottom: 6px;
+      left: 10px;
+      right: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-250px) rotate(var(--rotate));
+        opacity: 0;
+      }
+      8% { opacity: 0.9; }
+      90% { opacity: 0.85; }
+      100% {
+        transform: translateY(110vh) translateX(var(--drift)) rotate(calc(var(--rotate) + 5deg));
+        opacity: 0;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 { font-size: 42px; }
+      h2 { font-size: 36px; }
+      p { font-size: 24px; }
+      .final-message { font-size: 38px !important; }
+      .heart-icon { font-size: 56px; }
+
+      .polaroid-page {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 60px 20px 120px;
+      }
+
+      .polaroid { max-width: 100%; }
+      .nav-btn { padding: 10px 18px; font-size: 18px; }
+    }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .polaroid-page { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+   
+    <!-- Audio Element -->
+<audio id="pageAudio" preload="auto" loop></audio>
+
+<div class="falling-polaroids-layer" id="fallingLayer"></div>
+
+  <!-- Animated Wave Background -->
+  <div class="waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <div class="page-overlay"></div>
+  <div class="wrapper">
+    <div class="collection-box pix"></div>
+    <div class="claw-machine">
+      <div class="box pix">
+        <div class="machine-top pix">
+          <div class="arm-joint pix">
+            <div class="arm pix">
+              <div class="claws pix"></div>
+            </div>
+          </div>
+          <div class="rail hori pix"></div>
+          <div class="rail vert pix"></div>
+        </div>
+        <div class="machine-bottom pix">
+          <div class="collection-point pix"></div>
+        </div>
+      </div>
+      <div class="control pix">
+        <div class="cover left"></div>
+        <button class="hori-btn pix"></button>
+        <button class="vert-btn pix"></button>
+        <div class="cover right">
+          <div class="instruction pix"></div>
+        </div>
+        <div class="cover bottom"></div>
+        <div class="cover top">
+          <div class="collection-arrow pix"></div>
+        </div>
+        <div class="collection-point pix"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="envelope-modal" id="envelopeModal">
+    <div class="envelope-modal-content">
+      <div class="modal-close" id="modalClose"></div>
+
+      <div id="envelope-large" class="close">
+        <div class="front flap-large"></div>
+        <div class="front pocket-large"></div>
+
+        <div class="letter-large" id="letterLarge">
+          <div class="letter-content">
+            <!-- Page 1 -->
+            <div class="letter-page active" data-page="1">
+              <div class="words">
+                Halo gina,<br><br>
+                As you can guess, ame disini lagi nulis sesuatu buat kamu. Seolah-olah nya jari ame emang di gunain untuk lemparin pujian, words of affirmation, sama kata hati ame ke kamu. It's kind of amusing, gimana ame dulu yang setakut itu buat ngeliatin ke dunia kalau ada passion buat nulis, tapi sekarang ame ngga pernah berhenti nulis di depan seseorang. Ya, orang itu kamu sayang.
+              </div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="letter-page" data-page="2">
+              <div class="words">
+                Ame ngga pernah, motong kata-kata atau ungkapin hal yang bukan dari ame langsung bagi kamu, Dimana sayang ame dapatkan sesuatu yang bukan dari alhasil tangan, hati, sama perasaan ame. Not once in my life, ame pernah sejujur ini di depan seseorang semenjak ame mulai masa remaja, and now we're turning into adults. Hebat, buat di pikirin kalau kita sekarang berdua udah mau beranjak dewasa, tapi ame bersyukur orang yang dampingin ame itu kamu.
+              </div>
+            </div>
+
+            <!-- Page 3 -->
+            <div class="letter-page" data-page="3">
+              <div class="words">
+                Kamu, yang selalu sabar untuk menghadapi masalah apapun, kamu yang selalu jujur kepada ame disaat ame bener-bener butuh kejujuran, kamu yang selalu mencoba untuk ajarin ame hal yang lebih baik, merubah ame dari remaja yang belum sempat buat move on dari masa kecil nya ke ame yang sekarang.
+              </div>
+            </div>
+
+            <!-- Page 4 -->
+            <div class="letter-page" data-page="4">
+              <div class="words">
+                And I know, sayang nya ame pasti ngerasain hal yang sama. Kamu pasti kangen, di masa Dimana kamu bisa main-main di luar, di kampung kamu, kamu banyak waktu bebas. Kamu yang dulu disuruh tidur marah, padahal sekarang kalau disuruh tidur sometimes juga masih gamau nurut sih, cuman kamu lebih menghargai lagi waktu buat beristirahat.
+              </div>
+            </div>
+
+            <!-- Page 5 -->
+            <div class="letter-page" data-page="5">
+              <div class="words">
+                Sayangnya ame itu, orang yang paling mature, orang yang paling hebat, rajin, pinter yang pernah ame ketemuin. Bukan karena talenta kamu dari lahir, tapi karena segala usaha sama percapaian yang kamu dapetin selama kamu hidup. Kalau keluarga, atau orang lain di sekitar kamu ngga pernah bangga sama kamu, ada ame disini buat sadarin kamu atas hal itu.
+              </div>
+            </div>
+
+            <!-- Page 6 -->
+            <div class="letter-page" data-page="6">
+              <div class="words">
+                The future is strange, kita ngga tau di masa depan nanti ada apa yang lindas kita. Tapi kalau ada orang yang ame mau untuk masih sama ame di masa depan nanti, orang nya itu kamu. I'm not everything, ame ngga segala nya di kehidupan gina. Tapi disaat ame menjadi bagian kecil aja di kehidupan kamu, it already means a lot.
+              </div>
+            </div>
+
+          <!-- Page 7 -->
+<div class="letter-page" data-page="7">
+  <div class="words" style="text-align:center;">
+    Happy valentines sayang ame,<br>
+    I love you, to the moon and back.<br><br>
+
+    <button id="finalBtn" class="final-btn">
+      hold my hand?
+    </button>
+  </div>
+</div>
+
+
+
+            
+          </div>
+
+          <div class="page-controls">
+            <button class="page-btn" id="prevPage">←</button>
+            <span class="page-indicator"><span id="currentPage">1</span> / <span id="totalPages">7</span></span>
+            <button class="page-btn" id="nextPage">→</button>
+          </div>
+        </div>
+
+        <div class="hearts">
+          <div class="heart a1"></div>
+          <div class="heart a2"></div>
+          <div class="heart a3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const elements = {
+      clawMachine: document.querySelector('.claw-machine'),
+      box: document.querySelector('.box'),
+      collectionBox: document.querySelector('.collection-box'),
+      collectionArrow: document.querySelector('.collection-arrow'),
+      toys: [],
+    }
+
+    const settings = {
+      targetToy: null,
+      collectedNumber: 0,
+    }
+
+    const m = 2
+    const toys = {
+      envelope: {
+        w: 30 * m,
+        h: 22 * m,
+      },
+    }
+
+    const cornerBuffer = 16
+
+    const machineBuffer = {
+      x: 36,
+      y: 16,
+    }
+
+    const radToDeg = rad => Math.round(rad * (180 / Math.PI))
+    const calcX = (i, n) => i % n
+    const calcY = (i, n) => Math.floor(i / n)
+
+    const randomN = (min, max) => {
+      return Math.round(min - 0.5 + Math.random() * (max - min + 1))
+    }
+
+    const {
+      width: machineWidth,
+      height: machineHeight,
+      top: machineTop,
+    } = document.querySelector('.claw-machine').getBoundingClientRect()
+
+    const { height: machineTopHeight } = document
+      .querySelector('.machine-top')
+      .getBoundingClientRect()
+
+    const { height: machineBottomHeight, top: machineBottomTop } = document
+      .querySelector('.machine-bottom')
+      .getBoundingClientRect()
+
+    const maxArmLength = machineBottomTop - machineTop - machineBuffer.y
+
+    const adjustAngle = angle => {
+      const adjustedAngle = angle % 360
+      return adjustedAngle < 0 ? adjustedAngle + 360 : adjustedAngle
+    }
+
+    class Button {
+      constructor({ className, action, isLocked, pressAction, releaseAction }) {
+        Object.assign(this, {
+          el: document.querySelector(`.${className}`),
+          isLocked,
+        })
+        if (action) this.el.addEventListener('click', action)
+        ;['mousedown', 'touchstart'].forEach(action =>
+          this.el.addEventListener(action, pressAction),
+        )
+        ;['mouseup', 'touchend'].forEach(action =>
+          this.el.addEventListener(action, releaseAction),
+        )
+
+        if (!isLocked) this.activate()
+      }
+      activate() {
+        this.isLocked = false
+        this.el.classList.add('active')
+      }
+      deactivate() {
+        this.isLocked = true
+        this.el.classList.remove('active')
+      }
+    }
+
+    class WorldObject {
+      constructor(props) {
+        Object.assign(this, {
+          x: 0,
+          y: 0,
+          z: 0,
+          angle: 0,
+          transformOrigin: { x: 0, y: 0 },
+          interval: null,
+          default: {},
+          moveWith: [],
+          el: props.className && document.querySelector(`.${props.className}`),
+          ...props,
+        })
+        this.setStyles()
+        if (props.className) {
+          const { width, height } = this.el.getBoundingClientRect()
+          this.w = width
+          this.h = height
+        }
+        ;['x', 'y', 'w', 'h'].forEach(key => {
+          this.default[key] = this[key]
+        })
+      }
+      setStyles() {
+        Object.assign(this.el.style, {
+          left: `${this.x}px`,
+          top: !this.bottom && `${this.y}px`,
+          bottom: this.bottom,
+          width: `${this.w}px`,
+          height: `${this.h}px`,
+          transformOrigin: this.transformOrigin,
+        })
+        this.el.style.zIndex = this.z
+      }
+      setClawPos(clawPos) {
+        this.clawPos = clawPos
+      }
+      setTransformOrigin(transformOrigin) {
+        this.transformOrigin =
+          transformOrigin === 'center'
+            ? 'center'
+            : `${transformOrigin.x}px ${transformOrigin.y}px`
+        this.setStyles()
+      }
+      handleNext(next) {
+        clearInterval(this.interval)
+        if (next) next()
+      }
+      resumeMove({ moveKey, target, moveTime, next }) {
+        this.interval = null
+        this.move({ moveKey, target, moveTime, next })
+      }
+      resizeShadow() {
+        elements.box.style.setProperty('--scale', 0.5 + this.h / maxArmLength / 2)
+      }
+      move({ moveKey, target, moveTime, next }) {
+        if (this.interval) {
+          this.handleNext(next)
+        } else {
+          const moveTarget = target || this.default[moveKey]
+          this.interval = setInterval(() => {
+            const distance =
+              Math.abs(this[moveKey] - moveTarget) < 10
+                ? Math.abs(this[moveKey] - moveTarget)
+                : 10
+            const increment = this[moveKey] > moveTarget ? -distance : distance
+            if (
+              increment > 0
+                ? this[moveKey] < moveTarget
+                : this[moveKey] > moveTarget
+            ) {
+              this[moveKey] += increment
+              this.setStyles()
+              if (moveKey === 'h') this.resizeShadow()
+              if (this.moveWith.length) {
+                this.moveWith.forEach(obj => {
+                  if (!obj) return
+                  obj[moveKey === 'h' ? 'y' : moveKey] += increment
+                  obj.setStyles()
+                })
+              }
+            } else {
+              this.handleNext(next)
+            }
+          }, moveTime || 100)
+        }
+      }
+    }
+
+    class Toy extends WorldObject {
+      constructor(props) {
+        const toyType = 'envelope'
+        const size = toys[toyType]
+        super({
+          el: Object.assign(document.createElement('div'), {
+            className: `toy pix ${toyType}`,
+          }),
+          x: machineWidth / 2 - size.w / 2,
+          y: machineBottomTop - machineTop + machineBottomHeight / 2,
+          z: 0,
+          toyType,
+          ...size,
+          ...props,
+        })
+        elements.box.append(this.el)
+        const toy = this
+
+        this.el.addEventListener('click', () => this.openModal(toy))
+        elements.toys.push(this)
+      }
+      openModal(toy) {
+        const modal = document.getElementById('envelopeModal')
+        const envelope = document.getElementById('envelope-large')
+        modal.classList.add('active')
+        setTimeout(() => {
+          envelope.classList.add('open')
+          envelope.classList.remove('close')
+        }, 300)
+      }
+      collectToy(toy) {
+        toy.el.classList.remove('selected')
+        toy.x = machineWidth / 2 - toy.w / 2
+        toy.y = machineHeight / 2 - toy.h / 2
+        toy.z = 7
+        toy.el.style.setProperty('--rotate-angle', '0deg')
+        toy.setTransformOrigin('center')
+        toy.el.classList.add('display')
+        elements.clawMachine.classList.add('show-overlay')
+        settings.collectedNumber++
+        
+        const collectionEnvelope = Object.assign(document.createElement('div'), {
+          className: `toy-wrapper ${
+            settings.collectedNumber > 6 ? 'squeeze-in' : ''
+          }`,
+          innerHTML: `<div class="toy pix ${toy.toyType}"></div>`,
+        })
+        elements.collectionBox.appendChild(collectionEnvelope)
+        
+        setTimeout(() => {
+          const collectionToy = collectionEnvelope.querySelector('.toy')
+          collectionToy.style.cursor = 'pointer'
+          collectionToy.addEventListener('click', () => {
+            const modal = document.getElementById('envelopeModal')
+            const envelope = document.getElementById('envelope-large')
+            modal.classList.add('active')
+            setTimeout(() => {
+              envelope.classList.add('open')
+              envelope.classList.remove('close')
+            }, 300)
+          })
+        }, 1800)
+        
+        setTimeout(() => {
+          elements.clawMachine.classList.remove('show-overlay')
+          if (!document.querySelector('.selected'))
+            elements.collectionArrow.classList.remove('active')
+        }, 1000)
+      }
+      setRotateAngle() {
+        const angle =
+          radToDeg(
+            Math.atan2(
+              this.y + this.h / 2 - this.clawPos.y,
+              this.x + this.w / 2 - this.clawPos.x,
+            ),
+          ) - 90
+        const adjustedAngle = Math.round(adjustAngle(angle))
+        this.angle =
+          adjustedAngle < 180 ? adjustedAngle * -1 : 360 - adjustedAngle
+        this.el.style.setProperty('--rotate-angle', `${this.angle}deg`)
+      }
+    }
+
+    elements.box.style.setProperty('--shadow-pos', `${maxArmLength}px`)
+
+    const armJoint = new WorldObject({
+      className: 'arm-joint',
+    })
+
+    const vertRail = new WorldObject({
+      className: 'vert',
+      moveWith: [null, armJoint],
+    })
+
+    const arm = new WorldObject({
+      className: 'arm',
+    })
+
+    armJoint.resizeShadow()
+
+    armJoint.move({
+      moveKey: 'y',
+      target: machineTopHeight - machineBuffer.y,
+      moveTime: 50,
+      next: () =>
+        vertRail.resumeMove({
+          moveKey: 'x',
+          target: machineBuffer.x,
+          moveTime: 50,
+          next: () => {
+            Object.assign(armJoint.default, {
+              y: machineTopHeight - machineBuffer.y,
+              x: machineBuffer.x,
+            })
+            Object.assign(vertRail.default, {
+              x: machineBuffer.x,
+            })
+            activateHoriBtn()
+          },
+        }),
+    })
+
+    const doOverlap = (a, b) => {
+      return !(
+        b.x > a.x + a.w ||
+        b.x + b.w < a.x ||
+        b.y > a.y + a.h ||
+        b.y + b.h < a.y
+      );
+    }
+
+    const getClosestToy = () => {
+      const clawCenter = {
+        x: armJoint.x + 7,
+        y: armJoint.y + maxArmLength + machineBuffer.y - 15,
+      }
+      let closestToy = null
+      let closestDistance = Infinity
+      elements.toys.forEach(toy => {
+        const toyCenter = {
+          x: toy.x + toy.w / 2,
+          y: toy.y + toy.h / 2,
+        }
+        const dx = clawCenter.x - toyCenter.x
+        const dy = clawCenter.y - toyCenter.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        if (distance < 80 && distance < closestDistance) {
+          closestToy = toy
+          closestDistance = distance
+        }
+      })
+      if (closestToy) {
+        closestToy.setTransformOrigin({
+          x: clawCenter.x - closestToy.x,
+          y: clawCenter.y - closestToy.y,
+        })
+        closestToy.setClawPos(clawCenter)
+        settings.targetToy = closestToy
+      }
+    }
+
+    new Toy({ index: 0 })
+
+    const stopHoriBtnAndActivateVertBtn = () => {
+      armJoint.interval = null
+      horiBtn.deactivate()
+      vertBtn.activate()
+    }
+
+    const activateHoriBtn = () => {
+      horiBtn.activate()
+      ;[vertRail, armJoint, arm].forEach(c => (c.interval = null))
+    }
+
+    const dropToy = () => {
+      arm.el.classList.add('open')
+      if (settings.targetToy) {
+        settings.targetToy.z = 3
+        settings.targetToy.move({
+          moveKey: 'y',
+          target: machineHeight - settings.targetToy.h - 30,
+          moveTime: 50,
+        })
+        ;[vertRail, armJoint, arm].forEach(obj => (obj.moveWith[0] = null))
+      }
+      setTimeout(() => {
+        arm.el.classList.remove('open')
+        activateHoriBtn()
+        if (settings.targetToy) {
+          settings.targetToy.el.classList.add('selected')
+          elements.collectionArrow.classList.add('active')
+          settings.targetToy = null
+        }
+      }, 700)
+    }
+
+    const grabToy = () => {
+      if (settings.targetToy) {
+        ;[vertRail, armJoint, arm].forEach(
+          obj => (obj.moveWith[0] = settings.targetToy),
+        )
+        settings.targetToy.setRotateAngle()
+        settings.targetToy.el.classList.add('grabbed')
+      } else {
+        arm.el.classList.add('missed')
+      }
+    }
+
+    const horiBtn = new Button({
+      className: 'hori-btn',
+      isLocked: true,
+      pressAction: () => {
+        arm.el.classList.remove('missed')
+        vertRail.move({
+          moveKey: 'x',
+          target: machineWidth - armJoint.w - machineBuffer.x,
+          next: stopHoriBtnAndActivateVertBtn,
+        })
+      },
+      releaseAction: () => {
+        clearInterval(vertRail.interval)
+        stopHoriBtnAndActivateVertBtn()
+      },
+    })
+
+    const vertBtn = new Button({
+      className: 'vert-btn',
+      isLocked: true,
+      pressAction: () => {
+        if (vertBtn.isLocked) return
+        armJoint.move({
+          moveKey: 'y',
+          target: machineBuffer.y,
+        })
+      },
+      releaseAction: () => {
+        clearInterval(armJoint.interval)
+        vertBtn.deactivate()
+        getClosestToy()
+        setTimeout(() => {
+          arm.el.classList.add('open')
+          arm.move({
+            moveKey: 'h',
+            target: maxArmLength,
+            next: () =>
+              setTimeout(() => {
+                arm.el.classList.remove('open')
+                grabToy()
+                arm.resumeMove({
+                  moveKey: 'h',
+                  next: () => {
+                    vertRail.resumeMove({
+                      moveKey: 'x',
+                      next: () => {
+                        armJoint.resumeMove({
+                          moveKey: 'y',
+                          next: dropToy,
+                        })
+                      },
+                    })
+                  },
+                })
+              }, 500),
+          })
+        }, 500)
+      },
+    })
+
+    // Letter pagination
+    let currentPage = 1
+    const totalPages = 7
+    const pages = document.querySelectorAll('.letter-page')
+    const prevBtn = document.getElementById('prevPage')
+    const nextBtn = document.getElementById('nextPage')
+    const currentPageSpan = document.getElementById('currentPage')
+    const letterLarge = document.getElementById('letterLarge')
+    const envelope = document.getElementById('envelope-large')
+
+   function updatePage() {
+  pages.forEach((page, index) => {
+    page.classList.remove('active');
+    if (index + 1 === currentPage) {
+      setTimeout(() => {
+        page.classList.add('active');
+      }, 50);
+    }
+  });
+
+  currentPageSpan.textContent = currentPage;
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+}
+
+prevBtn.addEventListener('click', (e) => {
+  e.stopPropagation();   // prevent letter click from interfering
+  if (currentPage > 1) {
+    currentPage--;
+    updatePage();
+  }
+});
+
+nextBtn.addEventListener('click', (e) => {
+  e.stopPropagation();   // prevent letter click from interfering
+  if (currentPage < totalPages) {
+    currentPage++;
+    updatePage();
+  }
+});
+
+window.addEventListener('load', () => {
+  const overlay = document.querySelector('.page-overlay');
+  overlay.addEventListener('animationend', () => {
+    overlay.remove();
+  });
+});
+
+
+    // Letter click to read - THIS IS THE KEY CHANGE
+    letterLarge.addEventListener('click', (e) => {
+      if (!envelope.classList.contains('reading') && envelope.classList.contains('open')) {
+        e.stopPropagation()
+        envelope.classList.add('reading')
+      }
+    })
+
+    // Envelope click (only when not reading)
+    envelope.addEventListener('click', (e) => {
+      if (!envelope.classList.contains('reading') && envelope.classList.contains('close')) {
+        envelope.classList.add('open')
+        envelope.classList.remove('close')
+      }
+    })
+
+    // Modal handlers
+    const modal = document.getElementById('envelopeModal')
+    const modalClose = document.getElementById('modalClose')
+
+    modalClose.addEventListener('click', () => {
+      modal.classList.remove('active')
+      envelope.classList.remove('reading')
+      currentPage = 1
+      updatePage()
+    })
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active')
+        envelope.classList.remove('reading')
+        currentPage = 1
+        updatePage()
+      }
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modal.classList.remove('active')
+        envelope.classList.remove('reading')
+        currentPage = 1
+        updatePage()
+      }
+      
+      if (envelope.classList.contains('reading')) {
+        if (e.key === 'ArrowLeft' && currentPage > 1) {
+          currentPage--
+          updatePage()
+        }
+        if (e.key === 'ArrowRight' && currentPage < totalPages) {
+          currentPage++
+          updatePage()
+        }
+      }
+    })
+
+    document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "finalBtn") {
+    e.stopPropagation();
+
+    // Cute effect: fade everything softly
+    const envelope = document.getElementById("envelope-large");
+    envelope.style.transition = "opacity 1s ease";
+    envelope.style.opacity = "0";
+
+    setTimeout(() => {
+      alert("always.");
+      envelope.style.opacity = "1";
+    }, 1200);
+  }
+});
+
+const finalBtn = document.getElementById("finalBtn");
+
+if (finalBtn) {
+  finalBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    // Create fade overlay
+    const fade = document.createElement("div");
+    fade.classList.add("screen-fade");
+    document.body.appendChild(fade);
+
+    // Trigger fade
+    setTimeout(() => {
+      fade.classList.add("active");
+    }, 50);
+
+    // Redirect after fade completes
+    setTimeout(() => {
+      window.location.href = "carousel.html";
+    }, 1300);
+  });
+}
+
+ const pageAudio = document.getElementById("pageAudio");
+
+window.addEventListener("load", function() {
+  pageAudio.src = "music/ilikeyou.mp3"; // <-- your page 2 song
+  pageAudio.volume = 0;
+  pageAudio.play().catch(() => {});
+  
+  let fade = setInterval(() => {
+    if (pageAudio.volume < 0.95) {
+      pageAudio.volume += 0.05;
+    } else {
+      pageAudio.volume = 1;
+      clearInterval(fade);
+    }
+  }, 50);
+
+  
+  // Start falling polaroids automatically when page loads
+  startFallingPolaroids();
+});
+
+  // ===========================
+    // IMAGE DATA (from index.html)
+    // ===========================
+    const images = [
+      "archen/cwogin(1).jpg",
+      "archen/cwogin(2).jpg",
+      "archen/cwogin(3).jpg",
+      "archen/cwogin(4).jpg",
+      "archen/cwogin(5).jpg",
+      "archen/cwogin(6).jpg",
+      "archen/cwogin(7).jpg",
+        "archen/cwogin(8).jpg",
+        "archen/cwogin(9).jpg",
+    ];
+
+    const affirmations = [
+      "",
+    ];
+
+
+// ===========================
+    // FALLING POLAROIDS SYSTEM
+    // ===========================
+    const fallingLayer = document.getElementById('fallingLayer');
+    const activePolaroids = [];
+    const maxOnScreen = 7;
+    const minDistance = 200;
+    let polaroidInterval = null;
+    let fallingActive = false;
+
+    function isTooClose(x) {
+      return activePolaroids.some(px => Math.abs(px - x) < minDistance);
+    }
+
+    function createFallingPolaroid() {
+      if (activePolaroids.length >= maxOnScreen) return;
+
+      const maxWidth = window.innerWidth >= 1280 ? 340 :
+                       window.innerWidth >= 768  ? 285 : 230;
+
+      let x, attempts = 0;
+      do {
+        x = Math.random() * (window.innerWidth - maxWidth);
+        attempts++;
+      } while (isTooClose(x) && attempts < 20);
+
+      if (isTooClose(x)) return;
+
+      const randomIndex = Math.floor(Math.random() * images.length);
+
+      const polaroid = document.createElement('div');
+      polaroid.classList.add('polaroid-falling');
+
+      const img = document.createElement('img');
+      img.src = images[randomIndex];
+      img.onload = function () {
+        const ratio = this.naturalWidth / this.naturalHeight;
+        if (ratio > 1.2)      polaroid.classList.add('landscape');
+        else if (ratio < 0.8) polaroid.classList.add('portrait');
+        else                  polaroid.classList.add('square');
+      };
+      // default class so it doesn't collapse before onload
+      polaroid.classList.add('square');
+      polaroid.appendChild(img);
+
+      const caption = document.createElement('div');
+      caption.className = 'polaroid-caption-falling';
+      caption.innerText = affirmations[randomIndex % affirmations.length];
+      polaroid.appendChild(caption);
+
+      const rotate  = (Math.random() * 22 - 11) + 'deg';
+      const drift   = (Math.random() * 70 - 35) + 'px';
+      const duration = 9 + Math.random() * 6;
+
+      polaroid.style.left = x + 'px';
+      polaroid.style.setProperty('--rotate', rotate);
+      polaroid.style.setProperty('--drift', drift);
+      polaroid.style.animationDuration = duration + 's';
+
+      fallingLayer.appendChild(polaroid);
+      activePolaroids.push(x);
+
+      setTimeout(() => {
+        polaroid.remove();
+        const idx = activePolaroids.indexOf(x);
+        if (idx > -1) activePolaroids.splice(idx, 1);
+      }, duration * 1000);
+    }
+
+    function startFallingPolaroids() {
+      if (fallingActive) return;
+      fallingActive = true;
+      fallingLayer.classList.add('active');
+      // Burst a few immediately so screen isn't empty
+      createFallingPolaroid();
+      setTimeout(createFallingPolaroid, 400);
+      setTimeout(createFallingPolaroid, 800);
+      polaroidInterval = setInterval(createFallingPolaroid, 1800);
+    }
+
+    function stopFallingPolaroids() {
+      if (!fallingActive) return;
+      fallingActive = false;
+      clearInterval(polaroidInterval);
+      polaroidInterval = null;
+      fallingLayer.classList.remove('active');
+      // Remove any in-flight polaroids
+      fallingLayer.innerHTML = '';
+      activePolaroids.length = 0;
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untuk Gina - From Ame</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background-color: #000000;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===========================
+       LOADING SCREEN
+       =========================== */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease-out;
+    }
+
+    .loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Flower Container */
+    .flower {
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+
+    /* Flower Center */
+    .flower-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: #4a90e2;
+      border-radius: 50%;
+      z-index: 10;
+    }
+
+    /* Flower Petals */
+    .petal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 60px;
+      background: #6ba3e8;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform-origin: center bottom;
+      opacity: 1;
+      transition: all 0.6s ease-out;
+    }
+
+    .petal.picked {
+      transform: translateY(-150px) scale(0.3) rotate(var(--rotate-picked));
+      opacity: 0;
+    }
+
+    .petal:nth-child(1) {
+      transform: translate(-50%, -100%) rotate(0deg);
+    }
+
+    .petal:nth-child(2) {
+      transform: translate(-50%, -100%) rotate(45deg);
+    }
+
+    .petal:nth-child(3) {
+      transform: translate(-50%, -100%) rotate(90deg);
+    }
+
+    .petal:nth-child(4) {
+      transform: translate(-50%, -100%) rotate(135deg);
+    }
+
+    .petal:nth-child(5) {
+      transform: translate(-50%, -100%) rotate(180deg);
+    }
+
+    .petal:nth-child(6) {
+      transform: translate(-50%, -100%) rotate(225deg);
+    }
+
+    .petal:nth-child(7) {
+      transform: translate(-50%, -100%) rotate(270deg);
+    }
+
+    .petal:nth-child(8) {
+      transform: translate(-50%, -100%) rotate(315deg);
+    }
+
+    /* ===========================
+       PAGE CAROUSEL
+       =========================== */
+    .page-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.8s ease-in;
+    }
+
+    .page-container.visible {
+      opacity: 1;
+    }
+
+    /* Individual pages */
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Navigation controls */
+    .nav-controls {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .nav-controls.visible {
+      opacity: 1;
+    }
+
+    .nav-controls.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 12px 24px;
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.8);
+      transform: scale(1.05);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* Content sections */
+    .credits-section {
+      text-align: center;
+      color: #ffffff;
+      max-width: 900px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 64px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #ff2a22;
+    }
+
+    p {
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.8;
+      margin: 0 auto;
+    }
+
+    .heart-icon {
+      font-size: 72px;
+      color: #ff2a22;
+      margin: 30px 0;
+      animation: heartbeat 1.5s infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .final-message {
+      font-size: 56px !important;
+      font-weight: 700;
+      color: #ff2a22;
+      margin-top: 50px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 { font-size: 42px; }
+      h2 { font-size: 36px; }
+      p { font-size: 24px; }
+      .final-message { font-size: 38px !important; }
+      .heart-icon { font-size: 56px; }
+
+      .nav-btn {
+        padding: 10px 18px;
+        font-size: 18px;
+      }
+    }
+
+    /* ===========================
+       TRANSITION OVERLAY
+       =========================== */
+    .transition-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 5000;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .transition-overlay.active {
+      opacity: 1;
+    }
+
+    /* ===========================
+       FALLING POLAROIDS SECTION
+       =========================== */
+    .polaroids-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f6f1e8;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .polaroids-section.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Center Text for Polaroids */
+    .center-text-polaroids {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      font-weight: 600;
+      color: #b76e79;
+      letter-spacing: 4px;
+      animation: pulse 2.5s ease-in-out infinite;
+      z-index: 110;
+      cursor: pointer;
+      user-select: none;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    @keyframes pulse {
+      0% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 1;
+      }
+      100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    /* Polaroid Frame for falling */
+    .polaroid-falling {
+      position: absolute;
+      background: #ffffff;
+      padding: 14px 14px 50px 14px;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.15),
+        0 4px 8px rgba(0,0,0,0.08);
+      border-radius: 2px;
+      animation: fall linear forwards;
+      cursor: pointer;
+    }
+
+    .polaroid-falling.portrait {
+      width: 180px;
+    }
+
+    .polaroid-falling.landscape {
+      width: 240px;
+    }
+
+    .polaroid-falling.square {
+      width: 200px;
+    }
+
+    @media (min-width: 768px) {
+      .polaroid-falling.portrait {
+        width: 220px;
+      }
+
+      .polaroid-falling.landscape {
+        width: 300px;
+      }
+
+      .polaroid-falling.square {
+        width: 250px;
+      }
+      
+      .polaroid-falling {
+        padding: 16px 16px 60px 16px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .polaroid-falling.portrait {
+        width: 260px;
+      }
+
+      .polaroid-falling.landscape {
+        width: 350px;
+      }
+
+      .polaroid-falling.square {
+        width: 290px;
+      }
+      
+      .polaroid-falling {
+        padding: 18px 18px 70px 18px;
+      }
+    }
+
+    @media (min-width: 1440px) {
+      .polaroid-falling.portrait {
+        width: 300px;
+      }
+
+      .polaroid-falling.landscape {
+        width: 400px;
+      }
+
+      .polaroid-falling.square {
+        width: 330px;
+      }
+      
+      .polaroid-falling {
+        padding: 20px 20px 80px 20px;
+      }
+    }
+
+    .polaroid-falling img {
+      width: 100%;
+      display: block;
+      max-height: 300px;
+      object-fit: cover;
+    }
+
+    .polaroid-caption-falling {
+      position: absolute;
+      bottom: 8px;
+      left: 14px;
+      right: 14px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #555;
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-200px) translateX(0px) rotate(var(--rotate));
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) translateX(var(--drift)) rotate(calc(var(--rotate) + 6deg));
+        opacity: 0.9;
+      }
+    }
+
+    /* ===========================
+       MODAL/LIGHTBOX
+       =========================== */
+    .polaroid-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .polaroid-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .polaroid-modal-content {
+      position: relative;
+      background: #ffffff;
+      padding: 30px 30px 100px 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      border-radius: 4px;
+      max-width: 90%;
+      max-height: 90%;
+      transform: scale(0.8);
+      transition: transform 0.3s ease-out;
+    }
+
+    .polaroid-modal.active .polaroid-modal-content {
+      transform: scale(1);
+    }
+
+    .polaroid-modal-content img {
+      max-width: 600px;
+      max-height: 60vh;
+      width: auto;
+      height: auto;
+      display: block;
+    }
+
+    .polaroid-modal-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      right: 30px;
+      text-align: center;
+      font-size: 20px;
+      line-height: 1.6;
+      color: #555;
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 10001;
+    }
+
+    .modal-close:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-close::before,
+    .modal-close::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background: #ffffff;
+    }
+
+    .modal-close::before {
+      transform: rotate(45deg);
+    }
+
+    .modal-close::after {
+      transform: rotate(-45deg);
+    }
+
+    /* Mobile responsive modal */
+    @media (max-width: 768px) {
+      .polaroid-modal-content {
+        padding: 20px 20px 80px 20px;
+      }
+      
+      .polaroid-modal-content img {
+        max-width: 85vw;
+        max-height: 50vh;
+      }
+      
+      .polaroid-modal-caption {
+        font-size: 18px;
+        bottom: 15px;
+        left: 20px;
+        right: 20px;
+      }
+      
+      .modal-close {
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="flower" id="flower">
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="flower-center"></div>
+    </div>
+  </div>
+
+  <!-- Page Carousel Container -->
+  <div class="page-container" id="pageContainer">
+    <!-- Page 1 -->
+    <div class="page active" data-page="1">
+      <div class="credits-section">
+        <h1>Gina, sayangnya ame.</h1>
+      </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page" data-page="2">
+      <div class="credits-section">
+        <div class="heart-icon">♥</div>
+        <p>
+          Ame cuma mau mulai dengan sesuatu yang paling jujur dulu ya. Ame bersyukur banget kamu ada di hidup ame.
+        </p>
+      </div>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="page" data-page="3">
+      <div class="credits-section">
+        <p>
+          Bukan cuma karena kamu bikin hari-hari ame lebih manis, tapi karena kamu bikin ame ngerasa cukup, ngerasa diterima, ngerasa pulang. Setiap hal kecil tentang kamu, cara kamu ketawa, cara kamu cerita, cara kamu tetap kuat walaupun capek, itu semua bikin ame makin sayang.
+        </p>
+      </div>
+    </div>
+
+    <!-- Page 4 -->
+    <div class="page" data-page="4">
+      <div class="credits-section">
+        <div class="heart-icon">♥</div>
+        <p>
+          Ame mungkin ngga selalu bisa kasih hal yang besar atau mewah, tapi ame selalu pengen kasih sesuatu yang tulus. Sesuatu yang bener-bener dari hati ame.
+        </p>
+      </div>
+    </div>
+
+    <!-- Page 5 -->
+    <div class="page" data-page="5">
+      <div class="credits-section">
+        <p>
+          Jadi... ame bikin sesuatu kecil untuk kamu. Mungkin ngga sempurna, mungkin sederhana banget. Tapi setiap detilnya ame buat sambil mikirin kamu, sambil senyum sendiri, sambil berharap kamu ngerasa betapa berharganya kamu buat ame.
+        </p>
+      </div>
+    </div>
+
+    <!-- Page 6 -->
+    <div class="page" data-page="6">
+      <div class="credits-section">
+        <div class="heart-icon">♥</div>
+        <p>
+          Semoga kamu suka apa yang ame buat untuk kamu. It's just a "small" valentines gift... but it holds a very big part of my heart.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Controls -->
+  <div class="nav-controls" id="navControls">
+    <button class="nav-btn" id="prevBtn" disabled>← Previous</button>
+    <span class="page-indicator" id="pageIndicator">1 / 6</span>
+    <button class="nav-btn" id="nextBtn">Next →</button>
+  </div>
+
+  <!-- Transition Overlay -->
+  <div class="transition-overlay" id="transitionOverlay"></div>
+
+  <!-- Falling Polaroids Section -->
+  <div class="polaroids-section" id="polaroidsSection">
+    <div class="center-text-polaroids" id="clickMePolaroids">CLICK ME</div>
+  </div>
+
+  <!-- Polaroid Modal -->
+  <div class="polaroid-modal" id="polaroidModal">
+    <div class="modal-close" id="modalClose"></div>
+    <div class="polaroid-modal-content" id="modalContent">
+      <img id="modalImage" src="" alt="Full size polaroid">
+      <div class="polaroid-modal-caption" id="modalCaption"></div>
+    </div>
+  </div>
+
+ <!-- Audio Element -->
+<audio id="pageAudio" src="music/ipu.mp3" loop preload="auto"></audio>
+
+  <script>
+   // ===========================
+// SAFE AUDIO START (User Interaction Required)
+// ===========================
+const pageAudio = document.getElementById("pageAudio");
+let audioStarted = false;
+
+function initAudio() {
+  if (audioStarted) return;
+
+  pageAudio.volume = 0.8;
+  pageAudio.play().then(() => {
+    audioStarted = true;
+    console.log("Audio started successfully");
+  }).catch(err => {
+    console.log("Audio failed:", err);
+  });
+}
+
+// Start audio on first user interaction
+document.addEventListener("click", initAudio, { once: true });
+document.addEventListener("touchstart", initAudio, { once: true });
+document.addEventListener("keydown", initAudio, { once: true });
+
+
+
+    // ===========================
+    // LOADING SCREEN ANIMATION
+    // ===========================
+    window.addEventListener('load', function() {
+      const petals = document.querySelectorAll('.petal');
+      let petalIndex = 0;
+      
+      // Pick petals one by one
+      const pickPetals = setInterval(() => {
+        if (petalIndex < petals.length) {
+          const petal = petals[petalIndex];
+          const randomRotate = (Math.random() * 60 - 30) + 'deg';
+          petal.style.setProperty('--rotate-picked', randomRotate);
+          petal.classList.add('picked');
+          petalIndex++;
+        } else {
+          clearInterval(pickPetals);
+          
+          // Fade out loading screen after all petals are picked
+          setTimeout(() => {
+            document.getElementById('loadingScreen').classList.add('fade-out');
+            
+            // Remove loading screen and show carousel
+            setTimeout(() => {
+              document.getElementById('loadingScreen').remove();
+              document.getElementById('pageContainer').classList.add('visible');
+              document.getElementById('navControls').classList.add('visible');
+              // Start audio after loading screen is gone
+              startAudio();
+            }, 800);
+          }, 500);
+        }
+      }, 300);
+    });
+
+    // ===========================
+    // CAROUSEL NAVIGATION
+    // ===========================
+    const totalPages = 6;
+    const pages = document.querySelectorAll('.page');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageIndicator = document.getElementById('pageIndicator');
+
+    function showPage(pageNum) {
+      // Hide all pages
+      pages.forEach(page => {
+        page.classList.remove('active');
+      });
+
+      // Show current page
+      const targetPage = document.querySelector(`[data-page="${pageNum}"]`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      // Update page indicator
+      pageIndicator.textContent = `${pageNum} / ${totalPages}`;
+
+      // Update button states
+      prevBtn.disabled = pageNum === 1;
+      nextBtn.disabled = false;
+
+      currentPage = pageNum;
+    }
+
+    // Navigation button handlers
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      } else if (currentPage === totalPages) {
+        transitionToPolaroids();
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentPage > 1) {
+        showPage(currentPage - 1);
+      } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+        showPage(currentPage + 1);
+      } else if (e.key === 'ArrowRight' && currentPage === totalPages) {
+        transitionToPolaroids();
+      }
+    });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      if (touchEndX < touchStartX - 50 && currentPage < totalPages) {
+        showPage(currentPage + 1);
+      } else if (touchEndX < touchStartX - 50 && currentPage === totalPages) {
+        transitionToPolaroids();
+      } else if (touchEndX > touchStartX + 50 && currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    }
+
+    // Initialize
+    showPage(1);
+
+    // ===========================
+    // TRANSITION TO POLAROIDS
+    // ===========================
+    function transitionToPolaroids() {
+      const transitionOverlay = document.getElementById('transitionOverlay');
+      const polaroidsSection = document.getElementById('polaroidsSection');
+      const navControls = document.getElementById('navControls');
+
+      // Hide navigation immediately
+      navControls.classList.add('hidden');
+
+      // Small delay then fade to black
+      setTimeout(() => {
+        transitionOverlay.classList.add('active');
+      }, 300);
+
+      // After fade completes, show polaroids section
+      setTimeout(() => {
+        polaroidsSection.classList.add('active');
+        
+        // Start polaroid falling animation
+        startPolaroidFalling();
+        
+        // Fade out black overlay
+        setTimeout(() => {
+          transitionOverlay.classList.remove('active');
+        }, 500);
+      }, 1800);
+    }
+
+    // ===========================
+    // IMAGE AND AFFIRMATION DATA
+    // ===========================
+    const images = [
+      "assets/Gina/Gina(1).jpg",
+      "assets/Gina/Gina(2).jpg",
+      "assets/Gina/Gina(3).jpg",
+      "assets/Gina/Gina(4).jpg",
+      "assets/Gina/Gina(5).jpg",
+      "assets/Gina/Gina(6).jpg",
+      "assets/Gina/Gina(7).jpg",
+      "assets/Gina/Gina(8).jpg",
+      "assets/Gina/Gina(9).jpg",
+      "assets/Gina/Gina(10).jpg",
+      "assets/Gina/Gina(11).jpg",
+      "assets/Gina/Gina(12).jpg",
+      "assets/Gina/Gina(13).jpg",
+      "assets/Gina/Gina(14).jpg",
+      "assets/Gina/Gina(15).jpg",
+      "assets/Gina/Gina(16).jpg",
+      "assets/Gina/Gina(17).jpg",
+      "assets/Gina/Gina(18).jpg",
+      "assets/Gina/Gina(19).jpg",
+      "assets/Gina/Gina(20).jpg",
+      "assets/Gina/Gina(21).jpg",
+      "assets/Gina/Gina(22).jpg",
+      "assets/Gina/Gina(23).jpg",
+      "assets/Gina/Gina(24).jpg",
+      "assets/Gina/Gina(25).jpg",
+      "assets/Gina/Gina(26).jpg",
+      "assets/Gina/Gina(27).jpg",
+      "assets/Gina/Gina(28).jpg",
+      "assets/Gina/Gina(29).jpg",
+      "assets/Gina/Gina(30).jpg",
+      "assets/Gina/Gina(31).jpg",
+      "assets/Gina/Gina(32).jpg",
+      "assets/Gina/Gina(33).jpg",
+      "assets/Gina/Gina(34).jpg",
+      "assets/Gina/Gina(35).jpg",
+      "assets/Gina/Gina(36).jpg",
+      "assets/Gina/Gina(37).jpg",
+      "assets/Gina/Gina(38).jpg",
+      "assets/Gina/Gina(39).jpg",
+      "assets/Gina/Gina(40).jpg",
+      "assets/Gina/Gina(41).jpg",
+      "assets/Gina/Gina(42).jpg",
+      "assets/Gina/Gina(43).jpg",
+      "assets/Gina/Gina(44).jpg",
+      "assets/Gina/Gina(45).jpg",
+      "assets/Gina/Gina(46).jpg",
+      "assets/Gina/Gina(47).jpg",
+      "assets/Gina/Gina(48).jpg",
+      "assets/Gina/Gina(49).jpg",
+      "assets/Gina/Gina(50).jpg",
+      "assets/Gina/Gina(51).jpg",
+      "assets/Gina/Gina(52).jpg",
+      "assets/Gina/Gina(53).jpg",
+      "assets/Gina/Gina(54).jpg",
+      "assets/Gina/Gina(55).jpg",
+      "assets/Gina/Gina(56).jpg",
+      "assets/Gina/Gina(57).jpg",
+      "assets/Gina/Gina(58).jpg",
+      "assets/Gina/Gina(59).jpg",
+      "assets/Gina/Gina(60).jpg",
+      "assets/Gina/Gina(61).jpg",
+      "assets/Gina/Gina(62).jpg",
+      "assets/Gina/Gina(63).jpg",
+      "assets/Gina/Gina(64).jpg",
+      "assets/Gina/Gina(65).jpg",
+      "assets/Gina/Gina(66).jpg",
+      "assets/Gina/Gina(67).jpg",
+      "assets/Gina/Gina(68).jpg",
+      "assets/Gina/Gina(69).jpg",
+      "assets/Gina/Gina(70).jpg",
+      "assets/Gina/Gina(71).jpg",
+      "assets/Gina/Gina(72).jpg",
+      "assets/Gina/Gina(73).jpg",
+      "assets/Gina/Gina(74).jpg",
+      "assets/Gina/Gina(75).jpg",
+      "assets/Gina/Gina(76).jpg",
+      "assets/Gina/Gina(77).jpg",
+      "assets/Gina/Gina(78).jpg",
+      "assets/Gina/Gina(79).jpg",
+      "assets/Gina/Gina(80).jpg",
+      "assets/Gina/Gina(81).jpg",
+      "assets/Gina/Gina(82).jpg",
+      "assets/Gina/Gina(83).jpg",
+      "assets/Gina/Gina(84).jpg",
+      "assets/Gina/Gina(85).jpg",
+      "assets/Gina/Gina(86).jpg",
+      "assets/Gina/Gina(87).jpg",
+      "assets/Gina/Gina(88).jpg",
+      "assets/Gina/Gina(89).jpg",
+      "assets/Gina/Gina(90).jpg",
+      "assets/Gina/Gina(91).jpg",
+      "assets/Gina/Gina(92).jpg",
+      "assets/Gina/Gina(93).jpg",
+      "assets/Gina/Gina(94).jpg",
+      "assets/Gina/Gina(95).jpg",
+      "assets/Gina/Gina(96).jpg",
+      "assets/Gina/Gina(97).jpg",
+      "assets/Gina/Gina(98).jpg",
+      "assets/Gina/Gina(99).jpg",
+      "assets/Gina/Gina(100).jpg",
+      "assets/Gina/Gina(101).jpg",
+      "assets/Gina/Gina(102).jpg",
+      "assets/Gina/Gina(103).jpg",
+      "assets/Gina/Gina(104).jpg",
+      "assets/Gina/Gina(105).jpg",
+      "assets/Gina/Gina(106).jpg",
+      "assets/Gina/Gina(107).jpg",
+      "assets/Gina/Gina(108).jpg",
+      "assets/Gina/Gina(109).jpg",
+      "assets/Gina/Gina(110).jpg",
+      "assets/Gina/Gina(111).jpg",
+      "assets/Gina/Gina(112).jpg",
+      "assets/Gina/Gina(113).jpg",
+      "assets/Gina/Gina(114).jpg",
+      "assets/Gina/Gina(115).jpg",
+      "assets/Gina/Gina(116).jpg",
+      "assets/Gina/Gina(117).jpg",
+      "assets/Gina/Gina(118).jpg",
+      "assets/Gina/Gina(119).jpg",
+      "assets/Gina/Gina(120).jpg",
+      "assets/Gina/Gina(121).jpg",
+      "assets/Gina/Gina(122).jpg",
+      "assets/Gina/Gina(123).jpg",
+      "assets/Gina/Gina(124).jpg",
+      "assets/Gina/Gina(125).jpg",
+      "assets/Gina/Gina(126).jpg",
+      "assets/Gina/Gina(127).jpg",
+      "assets/Gina/Gina(128).jpg",
+      "assets/Gina/Gina(129).jpg",
+      "assets/Gina/Gina(130).jpg",
+      "assets/Gina/Gina(131).jpg",
+      "assets/Gina/Gina(132).jpg",
+      "assets/Gina/Gina(133).jpg",
+      "assets/Gina/Gina(134).jpg",
+      "assets/Gina/Gina(135).jpg",
+      "assets/Gina/Gina(136).jpg",
+      "assets/Gina/Gina(137).jpg",
+      "assets/Gina/Gina(138).jpg",
+      "assets/Gina/Gina(139).jpg",
+      "assets/Gina/Gina(140).jpg",
+      "assets/Gina/Gina(141).jpg",
+      "assets/Gina/Gina(142).jpg",
+      "assets/Gina/Gina(143).jpg",
+      "assets/Gina/Gina(144).jpg",
+      "assets/Gina/Gina(145).jpg",
+      "assets/Gina/Gina(146).jpg",
+      "assets/Gina/Gina(147).jpg",
+      "assets/Gina/Gina(148).jpg",
+      "assets/Gina/Gina(149).jpg",
+      "assets/Gina/Gina(150).jpg",
+      "assets/Gina/Gina(151).jpg",
+      "assets/Gina/Gina(152).jpg",
+      "assets/Gina/Gina(153).jpg",
+      "assets/Gina/Gina(154).jpg",
+      "assets/Gina/Gina(155).jpg",
+      "assets/Gina/Gina(156).jpg",
+      "assets/Gina/Gina(157).jpg",
+      "assets/Gina/Gina(158).jpg",
+      "assets/Gina/Gina(159).jpg",
+      "assets/Gina/Gina(160).jpg",
+      "assets/Gina/Gina(161).jpg",
+      "assets/Gina/Gina(162).jpg",
+      "assets/Gina/Gina(163).jpg",
+      "assets/Gina/Gina(164).jpg",
+      "assets/Gina/Gina(165).jpg",
+      "assets/Gina/Gina(166).jpg",
+      "assets/Gina/Gina(167).jpg",
+      "assets/Gina/Gina(168).jpg",
+      "assets/Gina/Gina(169).jpg",
+      "assets/Gina/Gina(170).jpg",
+      "assets/Gina/Gina(171).jpg",
+      "assets/Gina/Gina(172).jpg",
+      "assets/Gina/Gina(173).jpg",
+      "assets/Gina/Gina(174).jpg",
+      "assets/Gina/Gina(175).jpg",
+      "assets/Gina/Gina(176).jpg",
+      "assets/Gina/Gina(177).jpg",
+      "assets/Gina/Gina(178).jpg",
+      "assets/Gina/Gina(179).jpg",
+      "assets/Gina/Gina(180).jpg",
+      "assets/Gina/Gina(181).jpg",
+      "assets/Gina/Gina(182).jpg",
+      "assets/Gina/Gina(183).jpg",
+      "assets/Gina/Gina(184).jpg",
+      "assets/Gina/Gina(185).jpg",
+      "assets/Gina/Gina(186).jpg",
+      "assets/Gina/Gina(187).jpg",
+      "assets/Gina/Gina(188).jpg",
+      "assets/Gina/Gina(189).jpg",
+      "assets/Gina/Gina(190).jpg"
+    ];
+
+    const affirmations = [
+      "you're perfect — because you're gina.",
+      "ame is so lucky to love you.",
+      "you don't just shine, you glow differently.",
+      "kamu itu rumah buat ame.",
+      "you make me want to be softer.",
+      "the way you chase your dreams makes me admire you even more.",
+      "you're not flawless — you're real. and that's why you're perfect.",
+      "ame bangga banget sama kamu.",
+      "you make loving you feel easy.",
+      "kamu bikin ame ngerasa cukup.",
+      "your eyes still make me nervous in the best way.",
+      "you don't need saving. you lead your own story.",
+      "kamu selalu kuat, bahkan pas kamu capek.",
+      "i didn't fall in love with perfection. i fell in love with you.",
+      "kamu bikin dunia ame lebih hangat.",
+      "you're the reason ame still believes in love.",
+      "senior yang dulu ame kagumi, sekarang jadi milik ame.",
+      "you make me want to hug you every second.",
+      "kamu ngajarin ame cara sayang diri sendiri.",
+      "you are my peace in chaos.",
+      "kamu cantik banget, inside and out.",
+      "you don't even try — and you're still breathtaking.",
+      "ame selalu jatuh cinta lagi tiap liat kamu.",
+      "you make me feel chosen.",
+      "kamu itu detail yang bikin hidup ame indah.",
+      "you are strong in ways you don't even realize.",
+      "kamu bikin ame ngerasa pulang.",
+      "i love how independent you are.",
+      "kamu nggak butuh siapa-siapa buat jadi hebat.",
+      "you make love feel safe.",
+      "ame bakal selalu lari ke pelukan kamu.",
+      "you're my favorite person in every lifetime.",
+      "kamu itu tulus dan hangat banget.",
+      "i love how you become better every day.",
+      "kamu bikin ame pengen jadi versi terbaik ame.",
+      "you don't just exist — you inspire.",
+      "kamu adalah alasan ame bertahan.",
+      "i love your little glares at me.",
+      "kamu itu lucu tanpa sadar.",
+      "you make my heart feel full.",
+      "kamu itu segalanya tanpa perlu jadi apa-apa.",
+      "i adore the way you look at me.",
+      "kamu bikin ame ngerasa dihargai.",
+      "you don't even know how special you are.",
+      "kamu punya cara sendiri buat bikin ame jatuh cinta terus.",
+      "i didn't just fall in love with your personality.",
+      "ame jatuh cinta sama rigina firgianti.",
+      "you are everything soft in this world.",
+      "kamu itu nyaman banget.",
+      "you are the calm after my storm.",
+      "ame sayang banget sama kamu.",
+      "you don't just make me happy — you make me whole.",
+      "kamu itu tempat ame pulang.",
+      "you make tough days easier.",
+      "kamu selalu jadi alasan ame senyum.",
+      "you are my favorite chapter.",
+      "kamu itu alasan ame percaya sama cinta.",
+      "you make me feel seen.",
+      "kamu bikin ame ngerasa dipilih.",
+      "i love every inch of you.",
+      "setiap detail kamu itu indah.",
+      "you make me feel wanted.",
+      "kamu bikin ame ngerasa dicintai tanpa syarat.",
+      "i'll always choose you.",
+      "kamu itu hadiah buat ame.",
+      "you are my soft place to land.",
+      "kamu bikin ame tenang.",
+      "i love how you carry yourself.",
+      "kamu itu dewasa dan elegan.",
+      "you make me feel proud.",
+      "ame bangga punya kamu.",
+      "you're not just beautiful — you're meaningful.",
+      "kamu bikin ame ngerasa hidup.",
+      "i love your ambition.",
+      "kamu selalu berusaha tanpa ragu.",
+      "you make me want to kiss you randomly.",
+      "kamu itu gemes banget.",
+      "you don't just exist in my life.",
+      "kamu jadi bagian dari ame.",
+      "you are my always.",
+      "kamu itu selamanya buat ame.",
+      "i love the way you appreciate me.",
+      "kamu selalu bikin ame merasa cukup.",
+      "you gave me a home.",
+      "kamu adalah rumah ame.",
+      "i love you for who you are.",
+      "kamu sempurna karena kamu gina.",
+      "you make my world softer.",
+      "kamu bikin semuanya terasa ringan.",
+      "you are my warmth.",
+      "kamu itu hangat banget.",
+      "i'll keep falling in love with you.",
+      "ame bakal terus jatuh cinta sama kamu.",
+      "you are mine — and i'm yours.",
+      "kita itu satu tim.",
+      "you make me believe in forever.",
+      "kamu itu doa yang jadi nyata.",
+      "i love you, gina.",
+      "ame sayang banget sama kamu."
+    ];
+
+    // ===========================
+    // POLAROID FALLING SYSTEM
+    // ===========================
+    const activePolaroids = [];
+    const maxOnScreen = 7;
+    const minDistance = 220;
+    let polaroidInterval = null;
+
+    function isTooClose(x) {
+      return activePolaroids.some(px => Math.abs(px - x) < minDistance);
+    }
+
+    function createPolaroid() {
+      if (activePolaroids.length >= maxOnScreen) return;
+
+      let x;
+      let attempts = 0;
+      
+      let maxPolaroidWidth = 270;
+      if (window.innerWidth >= 1440) {
+        maxPolaroidWidth = 420;
+      } else if (window.innerWidth >= 1024) {
+        maxPolaroidWidth = 370;
+      } else if (window.innerWidth >= 768) {
+        maxPolaroidWidth = 320;
+      }
+
+      do {
+        x = Math.random() * (window.innerWidth - maxPolaroidWidth);
+        attempts++;
+      } while (isTooClose(x) && attempts < 20);
+
+      if (isTooClose(x)) return;
+
+      const polaroid = document.createElement("div");
+      polaroid.classList.add("polaroid-falling");
+
+      const randomIndex = Math.floor(Math.random() * images.length);
+
+      const img = document.createElement("img");
+      img.src = images[randomIndex];
+      
+      img.onload = function() {
+        const aspectRatio = this.naturalWidth / this.naturalHeight;
+        
+        if (aspectRatio > 1.2) {
+          polaroid.classList.add("landscape");
+        } else if (aspectRatio < 0.8) {
+          polaroid.classList.add("portrait");
+        } else {
+          polaroid.classList.add("square");
+        }
+      };
+      
+      polaroid.appendChild(img);
+
+      const caption = document.createElement("div");
+      caption.className = "polaroid-caption-falling";
+      const captionText = affirmations[randomIndex % affirmations.length];
+      caption.innerText = captionText;
+      polaroid.appendChild(caption);
+
+      // Add click event to open modal
+      polaroid.style.cursor = 'pointer';
+      polaroid.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openModal(images[randomIndex], captionText);
+      });
+
+      polaroid.style.left = x + "px";
+
+      const rotate = (Math.random() * 20 - 10) + "deg";
+      const drift = (Math.random() * 60 - 30) + "px";
+      const duration = 8 + Math.random() * 6;
+
+      polaroid.style.setProperty("--rotate", rotate);
+      polaroid.style.setProperty("--drift", drift);
+      polaroid.style.animationDuration = duration + "s";
+
+      document.getElementById('polaroidsSection').appendChild(polaroid);
+      activePolaroids.push(x);
+
+      setTimeout(() => {
+        polaroid.remove();
+        const index = activePolaroids.indexOf(x);
+        if (index > -1) activePolaroids.splice(index, 1);
+      }, duration * 1000);
+    }
+
+    function startPolaroidFalling() {
+      polaroidInterval = setInterval(createPolaroid, 1800);
+    }
+
+    // ===========================
+    // MODAL FUNCTIONS
+    // ===========================
+    function openModal(imageSrc, captionText) {
+      const modal = document.getElementById('polaroidModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalCaption = document.getElementById('modalCaption');
+      
+      modalImage.src = imageSrc;
+      modalCaption.innerText = captionText;
+      
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('polaroidModal');
+      modal.classList.remove('active');
+    }
+
+    // Close modal on X button click
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+
+    // Close modal when clicking outside the polaroid content
+    document.getElementById('polaroidModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Click Me handler for polaroids section
+    document.getElementById('clickMePolaroids').addEventListener('click', function() {
+      window.location.href = 'quiz.html';
+    });
+  </script>
+</body>
+</html>
